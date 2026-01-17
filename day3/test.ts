@@ -1,6 +1,6 @@
 import fs from "fs";
 
-fs.readFile("data.txt", "utf8", (err: NodeJS.ErrnoException | null, data: string) => {
+fs.readFile("dummy.txt", "utf8", (err: NodeJS.ErrnoException | null, data: string) => {
   if (err) throw err;
 
   type cords = [number, number];
@@ -10,12 +10,9 @@ fs.readFile("data.txt", "utf8", (err: NodeJS.ErrnoException | null, data: string
     return `${a},${b}`;
   };
 
-  const convertStrToNumber = (ele: string): [number, number] => {
-    return ele.split(",").map(Number) as [number, number];
-  };
-
   let raw: string = data.trim();
   const mapped = new Set<string>();
+  console.log(raw);
 
   let currentElement: cords = [0, 0];
 
