@@ -4,13 +4,13 @@ fs.readFile("data.txt", "utf-8", (err: NodeJS.ErrnoException, data: string) => {
   if (err) throw err;
   if (!data || data.trim().length === 0) console.error("no data in file");
 
-  let count = 0;
+  let count: number = 0;
 
   let lines = data
     .trim()
     .split("\n")
     .map((line) => line.trim());
-  let grid: boolean[][] = [...Array(1000)].map(() => Array(1000).fill(false));
+  let grid: number[][] = [...Array(1000)].map(() => Array(1000).fill(0));
 
   for (let line of lines) {
     let [action, fromX, fromY, toX, toY] = line
@@ -26,11 +26,7 @@ fs.readFile("data.txt", "utf-8", (err: NodeJS.ErrnoException, data: string) => {
       case "toggle":
         for (let i = fromXInt; i <= toXInt; i++) {
           for (let j = fromYInt; j <= toYInt; j++) {
-            if (grid[i][j]) {
-              grid[i][j] = false;
-            } else {
-              grid[i][j] = true;
-            }
+            grid[i][j] += 2;
           }
         }
 
@@ -39,7 +35,8 @@ fs.readFile("data.txt", "utf-8", (err: NodeJS.ErrnoException, data: string) => {
       case "turn off":
         for (let i = fromXInt; i <= toXInt; i++) {
           for (let j = fromYInt; j <= toYInt; j++) {
-            grid[i][j] = false;
+            if (grid[i][j] === 0) continue;
+            grid[i][j] -= 1;
           }
         }
         break;
@@ -47,7 +44,7 @@ fs.readFile("data.txt", "utf-8", (err: NodeJS.ErrnoException, data: string) => {
       case "turn on":
         for (let i = fromXInt; i <= toXInt; i++) {
           for (let j = fromYInt; j <= toYInt; j++) {
-            grid[i][j] = true;
+            grid[i][j] += 1;
           }
         }
         break;
@@ -56,14 +53,10 @@ fs.readFile("data.txt", "utf-8", (err: NodeJS.ErrnoException, data: string) => {
         break;
     }
   }
-  for (let y = 0; y < grid.length; y++) {
-    for (let x = 0; x < grid[y].length; x++) {
-      let cellValue = grid[y][x];
-      if (cellValue) {
-        count++;
-      }
+  for (let x = 0; x < grid.length; x++) {
+    for (let y = 0; y < grid[x].length; y++) {
+      count += grid[x][y];
     }
   }
-
   console.log(count);
 });
